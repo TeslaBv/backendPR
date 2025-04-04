@@ -3,77 +3,75 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from io import BytesIO
-from geopy.geocoders import Nominatim
 from geopy.distance import distance
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-# Coordenadas de referencia
-REF_COORD = (17.021448, -96.721127)
-RANGO_METROS = 10  # Rango permitido en metros
-            
-# Cargar el modelo entrenado
-model = load_model('modelo_lugar.h5')
+# Cargar el modelo multicategoría
+model = load_model('recognizePlace.h5')  # Tu modelo actualizado
 IMG_SIZE = (224, 224)
+
+# Coordenadas de referencia
+REF_COORDS = {
+    1: (17.020610, -96.721033),  # Lugar1
+    2: (17.022546, -96.720905)   # Lugar2
+}
+RANGO_METROS = 10
+
+# Nombres de las clases (asegúrate de que el orden corresponda con el orden de entrenamiento)
+CLASES = {
+    0: "Inválido",
+    1: "San Juan Bautista de La Salle",
+    2: "Puerta de Ingenierías"
+}
 
 @app.route('/verificar-lugar', methods=['POST'])
 def verificar_lugar():
-    if 'imagen' not in request.files:
-        return jsonify({'error': 'No se proporcionó imagen'}), 400
+    if 'imagen' not in request.files or 'lat' not in request.form or 'lon' not in request.form:
+        return jsonify({'error': 'Faltan parámetros: imagen, lat o lon'}), 400
 
     archivo = request.files['imagen']
     if archivo.filename == '':
         return jsonify({'error': 'No se seleccionó un archivo'}), 400
 
     try:
-        # Convertir el archivo en stream y cargar imagen
-        imagen = load_img(BytesIO(archivo.read()), target_size=IMG_SIZE)
-    except Exception as e:
-        return jsonify({'error': f'Error al procesar la imagen: {e}'}), 400
-
-    # Preprocesar imagen
-    img_array = img_to_array(imagen) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-
-    # Predecir
-    pred = model.predict(img_array)[0][0]
-    resultado = "Es el lugar correcto" if pred > 0.5 else "No es el lugar"
-
-    return jsonify({'resultado': resultado, 'score': float(pred)})
-
-@app.route('/verificar-ubicacion', methods=['GET'])
-def verificar_ubicacion():
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    
-    if lat is None or lon is None:
-        return jsonify({'error': 'Debe proporcionar los parámetros lat y lon'}), 400
-    
-    try:
-        lat = float(lat)
-        lon = float(lon)
+        lat = float(request.form['lat'])
+        lon = float(request.form['lon'])
     except ValueError:
-        return jsonify({'error': 'Los parámetros lat y lon deben ser numéricos'}), 400
+        return jsonify({'error': 'Lat y Lon deben ser numéricos'}), 400
 
-    # Coordenadas del usuario
-    user_coord = (lat, lon)
-    
-    # Calcular la distancia en metros
-    dist = distance(REF_COORD, user_coord).meters
+    try:
+        imagen = load_img(BytesIO(archivo.read()), target_size=IMG_SIZE)
+        img_array = img_to_array(imagen) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+    except Exception as e:
+        return jsonify({'error': f'Error al procesar imagen: {e}'}), 400
 
-    if dist <= RANGO_METROS:
-        return jsonify({
-            'mensaje': 'La ubicación está dentro del rango permitido',
-            'distancia': dist
-        })
-    else:
-        return jsonify({
-            'mensaje': 'La ubicación está fuera del rango permitido',
-            'distancia': dist
-        }), 400
+    # Predicción (devuelve array de 3 probabilidades)
+    predicciones = model.predict(img_array)[0]
+    clase_predicha = np.argmax(predicciones)
+    confianza = float(np.max(predicciones))
+    nombre_clase = CLASES.get(clase_predicha, "Desconocido")
 
+    # Verificación de ubicación
+    ubicacion_valida = False
+    distancia_metros = None
+
+    if clase_predicha in REF_COORDS:
+        ref_coord = REF_COORDS[clase_predicha]
+        distancia_metros = distance((lat, lon), ref_coord).meters
+        ubicacion_valida = distancia_metros <= RANGO_METROS
+
+    resultado_final = "Aceptado" if ubicacion_valida else "Rechazado"
+
+    return jsonify({
+        'clase_detectada': nombre_clase,
+        'resultado': resultado_final,
+        'confianza': round(confianza, 3),
+        'distancia_metros': round(distancia_metros, 2) if distancia_metros is not None else None
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
