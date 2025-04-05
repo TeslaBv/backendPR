@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -7,10 +8,14 @@ from geopy.distance import distance
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/verificar-lugar": {"methods": ["POST"]}})
 
 # Cargar el modelo multicategoría
-model = load_model('recognizePlace.h5')  # Tu modelo actualizado
+MODEL_PATH = "recognizePlace.h5"
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"El modelo {MODEL_PATH} no se encuentra en el servidor.")
+
+model = load_model(MODEL_PATH)  # Cargar el modelo entrenado
 IMG_SIZE = (224, 224)
 
 # Coordenadas de referencia
@@ -18,14 +23,18 @@ REF_COORDS = {
     1: (17.020610, -96.721033),  # Lugar1
     2: (17.022546, -96.720905)   # Lugar2
 }
-RANGO_METROS = 10
+RANGO_METROS = 25
 
-# Nombres de las clases (asegúrate de que el orden corresponda con el orden de entrenamiento)
+# Nombres de las clases (asegúrate de que el orden corresponda con el entrenamiento)
 CLASES = {
     0: "Inválido",
     1: "San Juan Bautista de La Salle",
     2: "Puerta de Ingenierías"
 }
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"mensaje": "API funcionando correctamente"}), 200
 
 @app.route('/verificar-lugar', methods=['POST'])
 def verificar_lugar():
@@ -49,7 +58,7 @@ def verificar_lugar():
     except Exception as e:
         return jsonify({'error': f'Error al procesar imagen: {e}'}), 400
 
-    # Predicción (devuelve array de 3 probabilidades)
+    # Predicción
     predicciones = model.predict(img_array)[0]
     clase_predicha = np.argmax(predicciones)
     confianza = float(np.max(predicciones))
@@ -74,4 +83,5 @@ def verificar_lugar():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto de Railway
+    app.run(host='0.0.0.0', port=port, debug=True)
