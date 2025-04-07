@@ -94,5 +94,17 @@ def after_request(response):
     return response
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto de Railway
-    app.run(host='0.0.0.0', port=port, debug=True)
+    # Configuración de SSL (usar certificados reales en producción)
+    ssl_context = (
+        '/etc/letsencrypt/live/tudominio.com/fullchain.pem',  # Ruta a tu certificado
+        '/etc/letsencrypt/live/tudominio.com/privkey.pem'     # Ruta a tu llave privada
+    )
+    
+    port = int(os.environ.get("PORT", 5000))
+    app.run(
+        host='0.0.0.0',
+        port=port,
+        ssl_context=ssl_context,
+        debug=False,
+        use_reloader=False
+    )
