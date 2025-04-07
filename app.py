@@ -8,11 +8,7 @@ from geopy.distance import distance
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/verificar-lugar": {
-    "methods": ["POST", "OPTIONS"],  # Permitir OPTIONS para preflight
-    "supports_credentials": True,
-    "allow_headers": ["Content-Type", "Authorization"]
-}})
+CORS(app, resources={r"/verificar-lugar": {"methods": ["POST"]}})
 
 # Cargar el modelo multicategoría
 MODEL_PATH = "recognizePlace.h5"
@@ -85,35 +81,7 @@ def verificar_lugar():
         'confianza': round(confianza, 3),
         'distancia_metros': round(distancia_metros, 2) if distancia_metros is not None else None
     })
-    
-@app.after_request
-def after_request(response):
-    origin = request.headers.get('Origin')
-    print(f"Solicitud desde origen: {origin}")
-    print(f"Headers de respuesta CORS: {response.headers}")
-    return response
 
 if __name__ == '__main__':
-    # Configuración de SSL
-    ssl_context = None
-    cert_path = 'certs/cert.pem'
-    key_path = 'certs/key.pem'
-    
-    # Verificar si existen los certificados
-    if os.path.exists(cert_path) and os.path.exists(key_path):
-        ssl_context = (cert_path, key_path)
-        print("✅ Modo HTTPS activado")
-    else:
-        print("⚠️  Modo HTTP (sin SSL)")
-
-    # Configuración del puerto
-    port = int(os.environ.get("PORT", 5000))
-    
-    # Iniciar servidor
-    app.run(
-        host='0.0.0.0',
-        port=port,
-        ssl_context=ssl_context,
-        debug=False,
-        use_reloader=False
-    )
+    port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto de Railway
+    app.run(host='0.0.0.0', port=port, debug=True)
