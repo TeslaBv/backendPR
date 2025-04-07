@@ -73,13 +73,33 @@ def verificar_lugar():
         distancia_metros = distance((lat, lon), ref_coord).meters
         ubicacion_valida = distancia_metros <= RANGO_METROS
 
-    resultado_final = "Aceptado" if ubicacion_valida else "Rechazado"
+    # Evaluación de estado
+    imagen_valida = clase_predicha in REF_COORDS
+
+    if imagen_valida and ubicacion_valida:
+        estado = 2
+        mensaje = "Foto y coordenadas correctas"
+        resultado_final = "Aceptado"
+    elif not imagen_valida and ubicacion_valida:
+        estado = 1
+        mensaje = "Coordenadas correctas, pero la foto no coincide"
+        resultado_final = "Rechazado"
+    elif imagen_valida and not ubicacion_valida:
+        estado = 0
+        mensaje = "Foto correcta, pero las coordenadas no coinciden"
+        resultado_final = "Rechazado"
+    else:
+        estado = -1
+        mensaje = "Foto y coordenadas incorrectas"
+        resultado_final = "Rechazado"
 
     return jsonify({
         'clase_detectada': nombre_clase,
         'resultado': resultado_final,
         'confianza': round(confianza, 3),
-        'distancia_metros': round(distancia_metros, 2) if distancia_metros is not None else None
+        'distancia_metros': round(distancia_metros, 2) if distancia_metros is not None else None,
+        'estado': estado,
+        'mensaje_detallado': mensaje
     })
 
 if __name__ == '__main__':
