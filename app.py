@@ -94,13 +94,22 @@ def after_request(response):
     return response
 
 if __name__ == '__main__':
-    # Configuración de SSL (usar certificados reales en producción)
-    ssl_context = (
-        '/etc/letsencrypt/live/tudominio.com/fullchain.pem',  # Ruta a tu certificado
-        '/etc/letsencrypt/live/tudominio.com/privkey.pem'     # Ruta a tu llave privada
-    )
+    # Configuración de SSL
+    ssl_context = None
+    cert_path = 'certs/cert.pem'
+    key_path = 'certs/key.pem'
     
+    # Verificar si existen los certificados
+    if os.path.exists(cert_path) and os.path.exists(key_path):
+        ssl_context = (cert_path, key_path)
+        print("✅ Modo HTTPS activado")
+    else:
+        print("⚠️  Modo HTTP (sin SSL)")
+
+    # Configuración del puerto
     port = int(os.environ.get("PORT", 5000))
+    
+    # Iniciar servidor
     app.run(
         host='0.0.0.0',
         port=port,
