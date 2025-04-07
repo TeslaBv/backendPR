@@ -8,7 +8,11 @@ from geopy.distance import distance
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/verificar-lugar": {"methods": ["POST"]}})
+CORS(app, resources={r"/verificar-lugar": {
+    "methods": ["POST", "OPTIONS"],  # Permitir OPTIONS para preflight
+    "supports_credentials": True,
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 
 # Cargar el modelo multicategoría
 MODEL_PATH = "recognizePlace.h5"
@@ -81,6 +85,13 @@ def verificar_lugar():
         'confianza': round(confianza, 3),
         'distancia_metros': round(distancia_metros, 2) if distancia_metros is not None else None
     })
+    
+@app.after_request
+def after_request(response):
+    origin = request.headers.get('Origin')
+    print(f"Solicitud desde origen: {origin}")
+    print(f"Headers de respuesta CORS: {response.headers}")
+    return response
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # Obtiene el puerto de Railway
