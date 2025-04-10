@@ -63,6 +63,12 @@ def verificar_lugar():
     clase_predicha = np.argmax(predicciones)
     confianza = float(np.max(predicciones))
     nombre_clase = CLASES.get(clase_predicha, "Desconocido")
+    descripcion_lugar = ""
+    if clase_predicha == 1:
+        descripcion_lugar = "San Juan Bautista de La Salle fue un sacerdote, pedagogo y santo francés, reconocido como el fundador de los Hermanos de las Escuelas Cristianas y considerado el patrono universal de los educadores. Nacido en Reims en 1651, dedicó su vida a la formación de maestros y a la educación de niños y jóvenes, especialmente aquellos en situación de pobreza. Su enfoque innovador transformó profundamente el sistema educativo de su tiempo, al promover la enseñanza en lengua vernácula, la formación profesional del maestro y la organización de escuelas gratuitas. El legado de San Juan Bautista de La Salle va más allá de los muros de las aulas. Su visión humanista y profundamente cristiana de la educación ha trascendido generaciones, inspirando a instituciones educativas en todo el mundo, entre ellas la Universidad La Salle Oaxaca, que forma parte de una red internacional comprometida con una educación integral, fraterna y con sentido social."
+    elif clase_predicha == 2:
+        descripcion_lugar = "Al ingresar al edificio de talleres de ingeniería de la Universidad La Salle Oaxaca, se percibe de inmediato un ambiente dedicado al aprendizaje práctico y al desarrollo tecnológico. Esta entrada no solo marca el acceso físico a las instalaciones, sino también la entrada a un espacio de creatividad, innovación y formación profesional. Este edificio ha sido diseñado para albergar espacios que responden a las necesidades de diversas disciplinas, como Ingeniería en Software y Sistemas Computacionales, Ingeniería Electrónica, Ingeniería Industrial y Arquitectura. En su interior, se encuentran salas de cómputo equipadas con tecnología de vanguardia, laboratorios con instrumentos especializados, áreas para simulación de procesos, zonas de diseño y dibujo técnico, así como espacios abiertos para el trabajo en equipo y la presentación de proyectos. Cada rincón ha sido pensado para impulsar el aprendizaje activo y fomentar la colaboración entre estudiantes de distintas carreras, permitiendo que cada uno desarrolle sus habilidades en un entorno que refleja el compromiso de la universidad con la excelencia académica y la innovación profesional."
+
 
     # Verificación de ubicación
     ubicacion_valida = False
@@ -95,6 +101,7 @@ def verificar_lugar():
 
     return jsonify({
         'clase_detectada': nombre_clase,
+        'descripcion_lugar': descripcion_lugar,
         'resultado': resultado_final,
         'confianza': round(confianza, 3),
         'distancia_metros': round(distancia_metros, 2) if distancia_metros is not None else None,
