@@ -30,17 +30,17 @@ CLASES = {
     },
     3: {
         "nombre": "Ocotlán de Morelos",
-        "descripcion": "Un pueblo mágico en Oaxaca, conocido por su iglesia barroca y su mercado tradicional.",
+        "descripcion": "Ocotlán de Morelos es un pintoresco municipio al sur de la ciudad de Oaxaca, famoso por su artesanía, tradiciones y gastronomía. Entre sus principales atractivos se encuentra el Templo y Ex Convento de Santo Domingo de Guzmán, una construcción del siglo XVI que resalta por su fachada de cantera verde y su interior de estilo barroco, ricamente decorado con retablos dorados. Esta joya arquitectónica fue rescatada del abandono gracias al esfuerzo del reconocido pintor Rodolfo Morales, originario del pueblo, quien impulsó su restauración y la preservación del patrimonio cultural. Hoy en día, esta iglesia es un ícono de Ocotlán, punto de encuentro espiritual y atractivo turístico que refleja la historia y el orgullo de su gente.",
         "video": "https://www.youtube.com/embed/v_Y0e69EeHQ?si=j4gj1lj8uQGqymm1"
     },
     2: {
         "nombre": "El Tule",
-        "descripcion": "Hogar del famoso Árbol del Tule, un ahuehuete con el tronco más ancho del mundo.",
+        "descripcion": "Santa María del Tule es un pequeño municipio ubicado a pocos kilómetros de la ciudad de Oaxaca, famoso a nivel mundial por albergar el majestuoso Árbol del Tule. Este ahuehuete milenario, cuya edad estimada supera los 2,000 años, es considerado uno de los árboles con mayor grosor del mundo, con un tronco que alcanza más de 40 metros de circunferencia. Se encuentra frente al templo de Santa María de la Asunción, una iglesia colonial que, junto al árbol, forma un conjunto de gran valor cultural y natural. El Árbol del Tule no solo es un símbolo de identidad para la comunidad, sino también un importante atractivo turístico que asombra por su tamaño, belleza y las figuras caprichosas que se forman en su corteza.",
         "video": "https://www.youtube.com/embed/BSFHKaHJJRI?si=hTcbmHCadjyQY1qF"
     },
     0: {
         "nombre": "Cruz de Piedra",
-        "descripcion": "Un lugar histórico en Oaxaca, conocido por su arquitectura colonial y su importancia cultural.",
+        "descripcion": "El Monumento Cruz de Piedra es un emblemático punto de referencia en el Centro Histórico de Oaxaca de Juárez, ubicado en la intersección de las calles Rufino Tamayo y García Vigil, en la Plazuela de la Cruz de Piedra. Originalmente, esta cruz fue colocada en el Paso del Acueducto que desciende desde San Felipe del Agua hasta el Templo del Carmen Alto, con la intención de evitar el paso de vehículos tras un accidente ocurrido en la zona. La cruz, tallada en cantera azul, fue instalada sobre una base de concreto durante la administración del gobernador Rodolfo Brena Torres entre 1962 y 1968. Con el tiempo, la Cruz de Piedra se convirtió en un símbolo de respeto para los creyentes y un lugar emblemático de la ciudad.",
         "video": "https://www.youtube.com/embed/1DJH6UqSlSU?si=gukOhRPxk-TrNGSO"
     }
 }
