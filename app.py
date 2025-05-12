@@ -31,17 +31,17 @@ CLASES = {
     3: {
         "nombre": "Ocotlán de Morelos",
         "descripcion": "Un pueblo mágico en Oaxaca, conocido por su iglesia barroca y su mercado tradicional.",
-        "video": "https://www.youtube.com/watch?v=ocotlan_video"
+        "video": "https://www.youtube.com/embed/v_Y0e69EeHQ?si=j4gj1lj8uQGqymm1"
     },
     2: {
         "nombre": "El Tule",
         "descripcion": "Hogar del famoso Árbol del Tule, un ahuehuete con el tronco más ancho del mundo.",
-        "video": "https://www.youtube.com/watch?v=el_tule_video"
+        "video": "https://www.youtube.com/embed/BSFHKaHJJRI?si=hTcbmHCadjyQY1qF"
     },
     0: {
         "nombre": "Cruz de Piedra",
         "descripcion": "Un lugar histórico en Oaxaca, conocido por su arquitectura colonial y su importancia cultural.",
-        "video": "https://www.youtube.com/watch?v=cruz_de_piedra_video"
+        "video": "https://www.youtube.com/embed/1DJH6UqSlSU?si=gukOhRPxk-TrNGSO"
     }
 }
 
